@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  List, ListItem, ListItemText, IconButton, Checkbox, Typography, Box, CircularProgress, Paper, Chip
+  List, ListItem, ListItemText, IconButton, Checkbox, Typography, Box, CircularProgress, Paper, Chip, Button
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -52,6 +52,19 @@ function TaskList({ onEdit }) {
       fetchTasks();
     } catch (err) {
       setError('Failed to update task');
+    }
+  };
+
+  const handlePriorityChange = async (task, newPriority) => {
+    try {
+      await fetch(`/api/tasks/${task.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priority: newPriority })
+      });
+      fetchTasks();
+    } catch (err) {
+      setError('Failed to update priority');
     }
   };
 
@@ -203,6 +216,33 @@ function TaskList({ onEdit }) {
                 gap: 1
               }}
             >
+              <Box display="flex" gap={0.5}>
+                {['P1', 'P2', 'P3'].map(p => (
+                  <Button
+                    key={p}
+                    size="small"
+                    onClick={() => handlePriorityChange(task, p)}
+                    data-testid={`task-priority-${task.id}-${p.toLowerCase()}`}
+                    sx={{
+                      minWidth: 32,
+                      height: 24,
+                      fontSize: '0.65rem',
+                      fontWeight: 700,
+                      px: 0.5,
+                      borderRadius: 1,
+                      backgroundColor: (task.priority || 'P3') === p ? 'var(--priority-color-selected)' : 'var(--priority-color-unselected)',
+                      color: 'white',
+                      boxShadow: 'none',
+                      '&:hover': {
+                        backgroundColor: (task.priority || 'P3') === p ? 'var(--priority-color-selected)' : '#9e9e9e',
+                        boxShadow: 'none',
+                      },
+                    }}
+                  >
+                    {p}
+                  </Button>
+                ))}
+              </Box>
               {task.due_date && (
                 <Chip
                   icon={<EventIcon sx={{ fontSize: 14 }} />}

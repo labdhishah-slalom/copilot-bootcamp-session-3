@@ -1,3 +1,11 @@
+/* Priority button colors (source: priority-field-ui-sketch.png)
+   Unselected: #7A7A7A (gray)
+   Selected:   #07F2E6 (blue) */
+:root {
+  --priority-color-unselected: #7A7A7A;
+  --priority-color-selected: #07F2E6;
+}
+
 .App {
   text-align: center;
   max-width: 800px;
